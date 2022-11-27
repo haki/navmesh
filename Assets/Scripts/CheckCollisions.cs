@@ -1,17 +1,23 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CheckCollisions : MonoBehaviour
 {
     public PlayerController playerController;
-    private Animator _animator;
     public GameObject player;
+    public GameObject speedBoosterIcon;
+    public GameObject restartPanel;
+
+    private Vector3 _playerStartPos;
+    private Animator _animator;
 
     private void Start()
     {
         _animator = player.GetComponentInChildren<Animator>();
+        _playerStartPos = transform.position;
+        speedBoosterIcon.SetActive(false);
+        restartPanel.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -20,6 +26,14 @@ public class CheckCollisions : MonoBehaviour
         {
             playerController.runningSpeed = 0;
             transform.Rotate(transform.rotation.x, 180, transform.rotation.z, Space.Self);
+            _animator.SetBool("Win", true);
+            restartPanel.SetActive(true);
+        }
+        if (other.CompareTag("SpeedBoost"))
+        {
+            playerController.runningSpeed = playerController.runningSpeed + 3f;
+            speedBoosterIcon.SetActive(true);
+            StartCoroutine(SlowAfterWhileCoroutine());
         }
     }
 
@@ -27,7 +41,22 @@ public class CheckCollisions : MonoBehaviour
     {
         if (collision.collider.CompareTag("Obstacle"))
         {
-            // TO DO
+            transform.position = _playerStartPos;
         }
+    }
+
+    private IEnumerator SlowAfterWhileCoroutine()
+    {
+        yield return new WaitForSeconds(2.0f);
+        if (playerController.runningSpeed != 0)
+        {
+            playerController.runningSpeed = playerController.runningSpeed - 3f;
+        }
+        speedBoosterIcon.SetActive(false);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,10 +5,12 @@ using UnityEngine.AI;
 public class ClickToMove : MonoBehaviour
 {
     private NavMeshAgent _agent;
+    private Animator _animator;
 
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -23,11 +23,6 @@ public class ClickToMove : MonoBehaviour
             {
                 _agent.destination = hit.point;
             }
-        }
-
-        if (_agent.remainingDistance > _agent.stoppingDistance)
-        {
-            // Run character
         }
     }
 }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -8,13 +5,16 @@ public class PlayerController : MonoBehaviour
     public float runningSpeed = 8f;
     public float xSpeed = 2f;
     public float limitX = 5f;
-
+    
     private float _touchXDelta = 0;
     private float _newX = 0;
 
     private void Update()
     {
-        SwipeCheck();
+        if (runningSpeed != 0)
+        {
+            SwipeCheck();
+        }
     }
 
     private void SwipeCheck()
