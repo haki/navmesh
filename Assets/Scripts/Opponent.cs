@@ -10,11 +10,13 @@ public class Opponent : MonoBehaviour
     private NavMeshAgent _agent;
     private Animator _animator;
     private Vector3 _opponentStartPos;
+    private InGameRanking _inGameRanking;
 
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
+        _inGameRanking = FindObjectOfType<InGameRanking>();
         _opponentStartPos = transform.position;
         speedBoosterIcon.SetActive(false);
     }
@@ -23,9 +25,16 @@ public class Opponent : MonoBehaviour
     {
         _agent.SetDestination(target.transform.position);
 
+        if (GameManager.instance.isGameOver)
+        {
+            _agent.Stop();
+        }
+
         if ((int)_agent.remainingDistance == (int)_agent.stoppingDistance)
         {
-            _animator.SetBool("Win", true);
+            bool isWin = _inGameRanking.namesTxt[_inGameRanking.namesTxt.Length-1].text == gameObject.name;
+            string animationName = isWin ? "Win" : "Lose";
+            _animator.SetBool(animationName, true);
             transform.Rotate(transform.position.x, 180, transform.position.z, Space.Self);
         }
     }
